@@ -5,12 +5,15 @@ class Tanki{
      * Tanki
      * 
      * Small crappy api.
-     * @param {String} nick User nickname 
-     * @param {String} language API Language
+     * @param {Object} params (args)
+     * @param {String} params.nick User nickname 
+     * @param {String} params.language API Language
+     * @param {Boolean} params.china Use 3dtank API? (Chinese TO)
      */
-    constructor(language="en", nick){
-        this.lang = language;
-        this.nick = nick;
+    constructor(params){
+        this.lang = !params.language ? "en" : params.language;
+        this.nick = params.nick;
+        this.china = !params.china ? false : params.china;
         if(!this.nick)throw new ParamError({
             code: 1,
             message: "Param \"nick\" not provided!"
@@ -26,7 +29,8 @@ class Tanki{
     async getFullUser(){
         const result = (await (await fetch(genURL({
             nick: this.nick,
-            lang: this.lang
+            lang: this.lang,
+            china: this.china
         }))).json());
         if(result.responseType == "NOT_FOUND")throw new APIError({
             code: 1,
@@ -154,26 +158,33 @@ class Servers{
         const test = (await (await fetch("https://test.tankionline.com/public_test")).json());
         const prod = (await (await fetch("https://tankionline.com/s/status.js")).json());
         const server_stats = (await (await fetch("https://tankionline.com/s/statistics.txt")).text());
+        const china_prod = (await (await fetch("https://www.3dtank.com/s/status.js")).json());
+        const china_stats = (await (await fetch("https://www.3dtank.com/s/statistics.txt")).text());
         return {
             test,
             prod,
-            server_stats
+            server_stats,
+            china_prod,
+            china_stats
         }
     }
 }
 
 class Top{
     /**
+     * Tops.
      * 
-     * @param {String} topType Must be "crystals","efficiency","golds" or "score". If not provided, returns all tops.
+     * @param {Object} params (args)
+     * @param {String} params.topType Must be "crystals","efficiency","golds" or "score". If not provided, returns all tops.
+     * @param {Boolean} params.china Get 3dtank top? (Chinese TO)
      * @returns {JSON} Top
      */
-    constructor(topType){
-        return this.get(topType)
+    constructor(params){
+        return this.get(params.topType, !params.china ? false : params.china)
     };
 
-    async get(topType){
-        const tops = (await (await fetch("https://ratings.tankionline.com/api/eu/top/")).json()).response;
+    async get(topType, china){
+        const tops = (await (await fetch(china ? "https://ratings.3dtank.com/get_stat/top/" :"https://ratings.tankionline.com/api/eu/top/")).json()).response;
         return topType == undefined ? tops : tops[topType]
     }
 }
@@ -181,5 +192,5 @@ class Top{
 module.exports = { Tanki, Servers, Top }
 
 function genURL (params){
-    return "https://ratings.tankionline.com/api/eu/profile/?user=" + params.nick + "&lang=" + params.lang
+    return (params.china ? "https://ratings.3dtank.com/get_stat/profile/?user=" :"https://ratings.tankionline.com/api/eu/profile/?user=") + params.nick + "&lang=" + params.lang 
 }

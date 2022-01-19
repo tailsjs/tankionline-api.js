@@ -1,5 +1,5 @@
 # TankiOnline-API.js
-* Библиотека для использования API игры Танки Онлайн.
+* Библиотека для использования API игры Танки Онлайн и 3DTank (китайской версии ТО).
 
 ## Пример
 ### Информация о пользователе
@@ -8,7 +8,8 @@ const { Tanki } = require("tankionline-api.js");
 
 const user = new Tanki({
     nick: "tailsjs",
-    language: "ru"
+    language: "ru",
+    china: false
 });
 
 console.log(await user.getFullUser()); // Full user info
@@ -33,7 +34,10 @@ console.log(servers)
 ```js
 const { Top } = require("tankionline-api.js");
 
-const top = await new Top("score")
+const top = await new Top({
+    topType: "score",
+    china: false
+})
 
 console.log(top)
 ```

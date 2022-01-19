@@ -1,6 +1,6 @@
 {
   "name": "tankionline-api.js",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "description": "Библиотека для использования API игры Танки Онлайн.",
   "main": "index.js",
   "dependencies": {
@@ -10,7 +10,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["tanki", "online", "tanks", "to", "js", "танки", "онлайн", "то"],
+  "keywords": ["tanki", "online", "tanks", "to", "js", "танки", "онлайн", "то", "3d", "tank", "3dtank", "3д", "танк", "3дтанк"],
   "author": "tailsjs",
   "license": "ISC",
   "bugs": {
